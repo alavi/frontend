@@ -5,19 +5,20 @@ import { fetchPosts, fetchCategories, getPostsByCategory, votePost } from '../ac
 
 class Post extends Component {
 
-  onUpVotePostClick = (id) => {
-  alert("upVoteClicked: " + id )
-    this.props.UpVotePost(id);
+  onUpVotePostClick = (data) => {
+  alert("upVoteClicked: " + data )
+    this.props.upVotePost(data);
   }
 
     render() {
 
       const { id,timestamp, title, body, author, category, voteScore } = this.props;
       //const post  = this.props.post
+
         return (
             <li key={id} className="post-list-item">
                 <div className="post-voting-box" >
-                    <button className="post-upvote" type="submit" onClick={() => this.onUpVotePostClick(id)}>Upvote</button>
+                    <button className="post-upvote" type="submit" onClick={() => this.onUpVotePostClick({id:id, option:'upVote'})}>Upvote</button>
                     <div className="post-score">
                         <p>Score: <span>{voteScore}</span></p>
                     </div>
@@ -61,10 +62,17 @@ const mapStateToProps = (state) => {
     //categories: state.categories
   };
 };
-
+/*
 const mapDispatchToProps = (dispatch) => {
   return {
-    UpVotePost: (id) => dispatch(votePost(id,'upVote'))
+    upVotePost: (id) => dispatch(votePost(id,'upVote'))
+  }
+}
+*/
+function mapDispatchToProps (dispatch) {
+  return {
+    upVotePost: (data) => dispatch(votePost(data))
+
   }
 }
 

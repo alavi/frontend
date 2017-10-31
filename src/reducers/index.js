@@ -34,16 +34,33 @@ function categories(state = [], action) {
             return state;
     }
 }
+/*
+function food (state = {}, action) {
+  switch (action.type) {
+    case ADD_RECIPE :
+      const { recipe } = action
 
-function post(state = [], action) {
-    const { id, timestamp, title, body, author, category,voteScore } = action;
+      return {
+        ...state,
+        [recipe.label]: recipe,
+      }
+    default :
+      return state
+  }
+}
+*/
+function post(state = {}, action) {
+    //const { id, timestamp, title, body, author, category,voteScore } = action;
     switch (action.type) {
       case VOTE_POST :
-        //const { post } = action
+
+        const { id, option } = action
       //  return {
       //    [post.voteScore]: action.voteScore ,
       //  }
-      return { ...state };
+      return {
+         ...state,
+          }
         case ADD_POST:
             return { ...state };
         default:
