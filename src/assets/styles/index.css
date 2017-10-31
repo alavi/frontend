@@ -1,0 +1,268 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+html, body, .root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  line-height: 1.5;
+}
+body, .app {
+  background: #f5f5f5;
+}
+
+/* Createpost */
+
+.close-create-post {
+  display: block;
+  width: 60px;
+  height: 60px;
+  background-image: url('../icons/arrow-back.svg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 30px;
+  font-size: 0;
+}
+
+.create-post-form {
+  padding: 20px;
+  max-width: 500px;
+  margin: 0 auto;
+  display: flex;
+}
+
+.create-post-details {
+  margin-left: 20px;
+}
+
+.create-post-avatar-input {
+  min-width: 60px;
+  height: 60px;
+  background-color: white;
+  background-image: url('../icons/person.svg');
+  background-size: 32px 32px;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+}
+
+.create-post-details input {
+  width: 100%;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  font-size: inherit;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  outline: 0;
+}
+
+
+.create-post-details button {
+  margin-top: 20px;
+  background: #ccc;
+  padding: 10px;
+  text-transform: uppercase;
+  font-size: inherit;
+  border: none;
+  outline: 0;
+}
+
+/* Listposts */
+
+.list-posts {
+  padding-top: 5px;
+}
+.list-posts-top {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  border-bottom: 1px solid #d5d8df;
+  display: flex;
+}
+
+.search-posts {
+  width: 100%;
+  padding: 20px 20px 20px 60px;
+  background-image: url('../icons/search.svg');
+  background-repeat: no-repeat;
+  background-position: 20px center;
+  background-size: 1.2em;
+  font-size: 1.2em;
+  border: 0;
+  outline: none;
+}
+
+.add-post {
+  display: block;
+  width: 73px;
+  background: white;
+  background-image: url('../icons/person-add.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 28px;
+  font-size: 0;
+}
+
+.showing-posts {
+  text-align: center;
+  margin: 20px 0;
+}
+.showing-posts button {
+  color: blue;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+}
+
+.post-list {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+.post-list-item {
+  padding: 20px;
+  background: white;
+  display: flex;
+}
+
+@media (min-width: 600px) {
+  .post-list-item {
+    margin: 20px;
+    border: 1px solid #d5d8df;
+    border-radius: 4px;
+  }
+}
+
+.post-voting-box {
+  margin-right: 20px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 50%;
+  flex-shrink: 0;
+  text-align: center;
+}
+
+.post-score span {
+  font-weight: bold;
+  color: blue;
+}
+
+.post-details {
+  padding-left: 20px;
+  border-left: 1px solid #eee;
+
+  flex: 1;
+  overflow: hidden;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.post-details h3 {
+  margin: 0;
+}
+
+.post-details p {
+  margin: 0;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+ span {
+  padding: 0 5px;
+  display: inline;
+}
+
+.post-remove {
+  padding-left: 20px;
+  align-self: center;
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  background-image: url('../icons/cancel.svg');
+  background-size: 100% 100%;
+  border: 0;
+  color: black;
+  font-size: 0;
+  vertical-align: middle;
+  cursor: pointer;
+  outline: none;
+}
+
+.post-upvote, .post-downvote {
+  padding-left: 20px;
+  align-self: center;
+  width: 32px;
+  height: 32px;
+  background-color: transparent;
+  background-size: 100% 100%;
+  border: 0;
+  color: black;
+  font-size: 0;
+  vertical-align: middle;
+  cursor: pointer;
+  outline: none;
+}
+
+.post-upvote {
+  background-image: url('../icons/arrow.svg');
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.post-downvote {
+  background-image: url('../icons/arrow.svg');
+  -webkit-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+}
+
+.post-info{
+  text-align: right;
+  font-size: .8em;
+  color: rgb(159, 160, 159);
+}
+
+.post-info h3 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.post-info a {
+  margin-left: 10px;
+  color: rgb(77, 77, 78);
+}
+
+.category-menu {
+  text-align: center;
+  padding: 10px;
+  font-weight: bold;
+}
+
+.category  {
+  margin-left: 10px;
+  color: rgb(77, 77, 78);
+  cursor: pointer;
+}
+
+.no-results {
+  text-align: center;
+  margin: 30px auto;
+
+}
