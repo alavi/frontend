@@ -1,29 +1,32 @@
 import React, { Component } from 'react';
-import { PropTypes } from 'prop-types';
-//import { fetchCategoryPosts } from '../actions';
-//import {fetchPosts } from '../actions';
-//import { connect } from 'react-redux';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom'
+import { fetchPosts, fetchCategories } from '../actions';
 
 class Menu extends Component {
 
+    componentDidMount = () => {
+        this.props.getAllCategories();
+    }
+
     render() {
+
+        const { categories } = this.props;
+
         return (
             <div className="category-menu">
                 <span>Categories: </span>
-                <span
-                    onClick={() => this.props.onAllCategoryClick()}
+                <Link to={`/`}
                     className="category">
                     all
-                </span>
-
+                </Link>
                 {
-                    this.props.categories.map(category => (
-                        <span
-                            onClick={() => this.props.onCategoryClick(category.name)}
+                    categories.map(category => (
+                        <Link to={`/${category.name}`}
                             key={category.name}
                             className="category">
                             {category.name}
-                        </span>
+                        </Link>
                     ))
                 }
             </div>
@@ -31,9 +34,18 @@ class Menu extends Component {
     }
 }
 
-Menu.propTypes = {
-    categories: PropTypes.array.isRequired,
-    onCategoryClick: PropTypes.func.isRequired
+const mapStateToProps = (state) => {
+    return {
+        posts: state.posts,
+        categories: state.categories
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getAllPosts: () => dispatch(fetchPosts()),
+        getAllCategories: () => dispatch(fetchCategories()),
+    }
 }
 
-export default Menu;
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);

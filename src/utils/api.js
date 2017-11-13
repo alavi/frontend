@@ -1,8 +1,5 @@
 
-const url = 'http://localhost:3001/'
-const api = process.env.REACT_APP_CONTACTS_API_URL || 'http://localhost:3001';
-//const headers = { 'Authorization': 'whatever-you-want', 'Content-Type': 'application/json' }
-//const headers = { 'Authorization': 'whatever-you-want', 'Accept': 'application/json' }
+const url = 'http://localhost:3001'
 
 // Generate a unique token for storing your bookshelf data on the backend server.
 let token = localStorage.token
@@ -24,59 +21,52 @@ function create_UUID(){
     return uuid;
 }
 
-export const fetchPosts = () => {
-  const u = `${url}posts`
-  console.log("inside fetchPosts")
-  console.log(u)
-  console.log(headers)
-  console.log(fetch(u, { headers: headers} ).then( res => res.text() )
-  .then((data) => JSON.parse(data)))
-  return fetch(u, { headers: headers} ).then( res => res.text() ).then((data) => JSON.parse(data))
-}
+
 
 export const getCategoryPosts = (category) => (
-    fetch(`${api}/${category}/posts`, { headers })
+    fetch(`${url}/${category}/posts`, { headers })
         .then(res => res.json())
 );
 
-export const getAllPosts = () =>
- fetch(`${url}posts`, { headers })
-   .then(res => res.json());
+export const getAllPosts = () => (
+ fetch(`${url}/posts`, { headers })
+   .then(res => res.json())
+);
 
 export const fetchCategories = () => {
-console.log("API: inside fetchCategories")
- const u = `${url}categories`
- return fetch(u, { headers: headers} )
+//console.log("API: inside fetchCategories")
+ const u = `${url}/categories`
+ return fetch(u, { headers} )
    .then( res => res.text() )
    .then((data) => JSON.parse(data))
 }
 
 export const fetchPostsByCategory = (category) => {
- const u = `${url}${category}/posts`
+ const u = `${url}/${category}/posts`
  return fetch(u, { headers: headers} )
-   .then( res => res.text() )
-   .then((data) => JSON.parse(data))
+  .then(res => res.json())
 }
 ///
 
-export const fetchPostById = (postId) =>
+export const fetchPostById = (postId) => (
   fetch(`${url}/posts/${postId}`, { headers })
     .then(res => res.json())
-    .then(data => data.post)
+  //  .then(data => data.post)
+);
 
-export const votePost = (id, option) =>
-  fetch(`${url}posts/${id}`, {
+export const votePost = (id, values) => (
+  fetch(`${url}/posts/${id}`, {
     method: 'POST',
     headers: {
       ...headers,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ option: option
-     })
-   })
+    body: JSON.stringify(values)
+    }).then(res => res.json())
+  )
    //.then(res => res.json())
 
-
+/*
   export const voteUpPostById = (id,vote) =>
     fetch(`${url}/posts/${id}`, {
       method: 'POST',
@@ -87,8 +77,9 @@ export const votePost = (id, option) =>
       body: JSON.stringify({ voteScore:vote + 1
        })
     }).then(res => res.json())
-
-export const voteOnCommentById = (id,vote) =>
+*/
+/*
+export const voteCommentById = (id,vote) =>
   fetch(`${url}/comments/${id}`, {
     method: 'POST',
     headers: {
@@ -98,8 +89,18 @@ export const voteOnCommentById = (id,vote) =>
     body: JSON.stringify({ voteScore:vote
      })
   }).then(res => res.json())
+*/
+  export const voteComment = (id, option) => (
+    fetch(`${url}/comments/${id}`, {
+      method: 'POST',
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(option)
+    }).then(res => res.json())
 
-
+)
 export const updatePostById = (id,title,body) =>
   fetch(`${url}/posts/${id}`, {
     method: 'PUT',
@@ -153,20 +154,40 @@ export const deletePostById = (id) =>
   }).then(res => res.json())
 
 export const fetchCommetsByPostId = (postId) =>
+(
   fetch(`${url}/posts/${postId}/comments`, { headers })
     .then(res => res.json())
-    .then(data => data.comments)
+  );
 
-export const fetchCommetById = (commentId) =>
+export const fetchPostCommentsCount = (id) => (
+    fetch(`${url}/posts/${id}/comments`, { headers })
+        .then(res => res.json())
+        .then(res => res.length)
+)
+
+export const fetchCommentById = (commentId) => (
   fetch(`${url}/comments/${commentId}`, { headers })
     .then(res => res.json())
-    .then(data => data.comment)
+    //.then(data => data.comment)
+);
 
-export const getAll = () =>
-  fetch(`${url}/books`, { headers })
-    .then(res => res.json())
-    .then(data => data.books)
+export const fetchPost = (id) => (
+    fetch(`${url}/posts/${id}`, { headers })
+        .then(res => res.json())
+);
 
+export const addPost = (body) => (
+    fetch(`${url}/posts`, {
+        method: 'POST',
+        headers: {
+            ...headers,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+    }).then(res => res.json())
+)
+
+/*
 export const addPost = (title, body, author, category) =>
   fetch(`${url}/posts`, {
     method: 'POST',
@@ -182,6 +203,17 @@ export const addPost = (title, body, author, category) =>
       category:category
      })
   }).then(res => res.json())
+*/
+  export const editPost = (id, body) => (
+    fetch(`${url}/posts/${id}`, {
+      method: 'PUT',
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    }).then(res => res.json())
+  );
 
 export const addCommentToPost = (postId, body, author) =>
   fetch(`${url}/comments`, {
@@ -199,8 +231,37 @@ export const addCommentToPost = (postId, body, author) =>
      })
   }).then(res => res.json())
 
+  export const addComment = (body) => (
+      fetch(`${url}/comments`, {
+          method: 'POST',
+          headers: {
+              ...headers,
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+      }).then(res => res.json())
+  )
+
+export const fetchComment = (id) => (
+    fetch(`${url}/comments/${id}`, {
+        headers
+    }).then(res => res.json())
+);
+
+export const editComment = (id, body) => (
+    fetch(`${url}/comments/${id}`, {
+      method: 'PUT',
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    }).then(res => res.json())
+  );
+
+
 export const getAllCategories = () => (
-    fetch(`${api}/categories`, { headers })
+    fetch(`${url}/categories`, { headers })
         .then(res => res.json())
         .then(res => res.categories)
 );

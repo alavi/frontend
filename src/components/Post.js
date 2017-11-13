@@ -1,79 +1,128 @@
 import React, { Component } from 'react';
-import { PropTypes } from 'prop-types';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { fetchPosts, fetchCategories, getPostsByCategory, votePost } from '../actions';
+import { deletePost, votePost, getCommentsCount } from '../actions';
+import Modal from 'react-modal';
+import EditPost from './EditPost';
 
 class Post extends Component {
+    constructor() {
+        super();
+        this.state = {
+            showModal: false
+        };
+    }
 
-  onUpVotePostClick = (data) => {
-  alert("upVoteClicked: " + data )
-    this.props.upVotePost(data);
-  }
+    deletePost = (e, id) => {
+        e.preventDefault();
+        this.props.deletePost(id);
+    }
+
+    editPost = (e) => {
+        e.preventDefault();
+        this.setState({ showModal: true });
+    }
+
+    handleCloseModal() {
+        this.setState({ showModal: false });
+    }
+
+    votePost = (e, id, vote) => {
+        e.preventDefault();
+        this.props.votePost(id, vote);
+    }
+
+    componentDidMount = () => {
+        if (!this.props.showDetails) {
+            const { id } = this.props.post;
+            this.props.getCommentsCount(id);
+        }
+    }
 
     render() {
 
-      const { id,timestamp, title, body, author, category, voteScore } = this.props;
-      //const post  = this.props.post
+        const { showDetails } = this.props;
+        let { id, timestamp, title, body, author, category, voteScore } = this.props.post;
+
+        if (this.props.location && !this.props.post) {
+            let { id, timestamp, title, body, author, category, voteScore } = this.props.location.state.post;
+        }
+
+        const dateTime = (new Date(timestamp)).toUTCString();
 
         return (
-            <li key={id} className="post-list-item">
-                <div className="post-voting-box" >
-                    <button className="post-upvote" type="submit" onClick={() => this.onUpVotePostClick({id:id, option:'upVote'})}>Upvote</button>
-                    <div className="post-score">
-                        <p>Score: <span>{voteScore}</span></p>
+            <div>
+                <li className="post-list-item">
+                    <div className="post-voting-box" >
+                        <button className="post-upvote"
+                            onClick={(e) => this.votePost(e, id, "upVote")}>Upvote</button>
+                        <div className="post-score">
+                            <p>Score: <span>{voteScore}</span></p>
+                        </div>
+                        <button className="post-downvote"
+                            onClick={(e) => this.votePost(e, id, "downVote")} >Downvote</button>
                     </div>
-                    <button className="post-downvote">Downvote</button>
-                </div>
-                <div className="post-details">
-                    <div className="post-info">
-                        <span className="post-author">Author: {author}</span>
-                        <span className="post-author">Category: {category}</span>
-                        <span className="post-author">{timestamp}</span>
+                    <div className="post-details">
+                        <div className="post-info">
+                            <span className="post-author">Author: {author}</span>
+                            <span className="post-author">Category: {category}</span>
+                            <span className="post-author">{dateTime}</span>
+                        </div>
+                        <h3 className="post-title">
+                            {
+                                showDetails
+                                    ? title
+                                    : <Link to={{ pathname: `/${category}/${id}`, state: { post: this.props.post, edit: false } }}
+                                        className="link-button">
+                                        {title}
+                                    </Link>
+                            }
+
+                        </h3>
+                        <p className={!showDetails ? "post-text" : ""}>{body}</p>
+                        <div className="post-info">
+                            {!showDetails && <span>Comments: {this.props.commentsCount[id]}</span>}
+                            <div className="post-controls">
+
+                                <a href=""
+                                    className="post-edit"
+                                    onClick={(e) => this.editPost(e)}>
+                                    Edit
+                                </a>
+                                <a href=""
+                                    className="post-delete"
+                                    onClick={(e) => this.deletePost(e, id)}>
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <h3>{title}</h3>
-                    <p>{body}</p>
-                    <div className="post-info">
-                        <a href="" className="post-comments">Comments: 34</a>
-                        <a href="" className="post-edit">Edit</a>
-                        <a href="" className="post-delete">Delete</a>
-                    </div>
-                </div>
-            </li>
+                </li>
+                <Modal
+                    isOpen={this.state.showModal}
+                    contentLabel="Modal">
+                    <h3>Edit Post</h3>
+                    <EditPost
+                        post={this.props.post}
+                        handleCloseModal={(e) => this.handleCloseModal(e)} />
+                </Modal>
+            </div>
         )
     }
 }
 
-Post.propTypes = {
-    id: PropTypes.string,
-    timestamp: PropTypes.number,
-    title: PropTypes.string.isRequired,
-    body: PropTypes.string.isRequired,
-    author: PropTypes.string,
-    category: PropTypes.string,
-    voteScore: PropTypes.number,
-    //onUpVotePostClick: PropTypes.func.isRequired
-}
-
-//export default Post;
-
 const mapStateToProps = (state) => {
-  return {
-    post: state.post
-    //categories: state.categories
-  };
-};
-/*
-const mapDispatchToProps = (dispatch) => {
-  return {
-    upVotePost: (id) => dispatch(votePost(id,'upVote'))
-  }
+    return {
+        commentsCount: state.commentsCount
+    };
 }
-*/
-function mapDispatchToProps (dispatch) {
-  return {
-    upVotePost: (data) => dispatch(votePost(data))
 
-  }
+const mapDispatchToProps = (dispatch) => {
+    return {
+        deletePost: (id) => dispatch(deletePost(id)),
+        votePost: (id, vote) => dispatch(votePost(id, vote)),
+        getCommentsCount: (id) => dispatch(getCommentsCount(id)),
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Post);

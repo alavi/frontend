@@ -1,41 +1,47 @@
 import React, { Component } from 'react';
-import { PropTypes } from 'prop-types';
+import { connect } from 'react-redux';
+import { fetchPost } from '../actions';
+import CommentList from './CommentList';
+import Post from './Post';
+import { Link } from 'react-router-dom';
 
-class Post extends Component {
+class PostDetails extends Component {
+
+    componentDidMount = () => {
+        const { id } = this.props.match.params;
+        this.props.fetchPost(id);
+    }
 
     render() {
+        const { post } = this.props;
+        const { id } = this.props.match.params;
 
-        const { timestamp, title, body, author, category, voteScore } = this.props;
         return (
-            <li className="post-list-item">
-                <div className="post-voting-box" >
-                    <button className="post-upvote" onClick={this.onUpVotePostClick}>Upvote</button>
-                    <div className="post-score">
-                        <p>Score: <span>{voteScore}</span></p>
-                    </div>
-                    <button className="post-downvote">Downvote</button>
-                </div>
-                <div className="post-details">
-                    <div className="post-info">
-                        <span className="post-author">Author: {author}</span>
-                        <span className="post-author">Category: {category}</span>
-                        <span className="post-author">{timestamp}</span>
-                    </div>
-                    <h3>Post 1</h3>
-                    <p>Post body</p>
-                    <div className="post-info">
-                        <a href="" className="post-comments">Comments: 34</a>
-                        <a href="" className="post-edit">Edit</a>
-                        <a href="" className="post-delete">Delete</a>
-                    </div>
-                </div>
-            </li>
+            <div>
+                {Object.keys(post).length !== 0 && <div>
+                    <Post post={post} showDetails={true} />
+                    <CommentList postId={id} />
+                </div>}
+                {Object.keys(post).length === 0 && <div className="text-center">
+                    <h3 className="container-text text-center">No such post</h3>
+                    <Link to={'/'}>return home</Link>
+                </div>}
+            </div>
         )
     }
 }
 
-Post.propTypes = {
-    onUpVotePostClick: PropTypes.func.isRequired
+const mapStateToProps = (state) => {
+    const { post, posts } = state;
+    return {
+        post: post
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchPost: (id) => dispatch(fetchPost(id))
+    }
 }
 
-export default Post;
+export default connect(mapStateToProps, mapDispatchToProps)(PostDetails);

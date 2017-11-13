@@ -1,33 +1,67 @@
 import React, { Component } from 'react';
 import Post from './Post';
-import {PropTypes} from 'prop-types';
+import { connect } from 'react-redux';
+import { fetchPosts, sortPostsByDate, sortPostsByScore } from '../actions';
+import { Link } from 'react-router-dom';
 
 class PostList extends Component {
 
-    render() {
+    state = {
+        sort: "byScore"
+    }
 
+    componentDidMount = () => {
+        this.props.getAllPosts();
+    }
+
+    onSortMethodChange = (e) => {
+        switch (e.target.value) {
+            case "date":
+                this.setState({ sort: "byDate" })
+                return;
+            case "score":
+                this.setState({ sort: "byScore" })
+                return;
+            default:
+                return;
+        }
+    }
+
+    render() {
         const { posts } = this.props;
+        const { category } = this.props.match.params;
+
+        let postsByCategory = category
+            ? posts.filter((post) => post.category === category)
+            : posts;
+
+        let postList = [];
+
+        if (this.state.sort === "byDate")
+            postList = postsByCategory.sort((x, y) => x.timestamp <= y.timestamp);
+        if (this.state.sort === "byScore")
+            postList = postsByCategory.sort((x, y) => x.voteScore <= y.voteScore);
 
         return (
-
             <div className="list-posts">
+                <Link to={`/posts/add`} className="container-text">Add new post</Link>
+                {postList.length > 1 && <select
+                    className="container-text"
+                    name="category"
+                    defaultValue="react"
+                    onChange={(e) => this.onSortMethodChange(e)}>
+                    <option value="score">Sort by score</option>
+                    <option value="date">Sort by date</option>
+                </select>}
                 <ol className="post-list">
                     {
-                        posts.length?
-                        posts.map(post => (
-                            <Post
-                                key={post.id}
-                                id={post.id}
-                                timestamp={post.timestamp}
-                                title={post.title}
-                                body={post.body}
-                                author={post.author}
-                                category={post.category}
-                                voteScore={post.voteScore}
-                                //onUpVotePostClick={post.onUpVotePostClick}
-                            />
-                        ))
-                        : (<div className="no-results">no results</div>)
+                        postList.length ?
+                            postList.map((post, i) => (
+                                <Post key={i}
+                                    post={post}
+                                    showDetails={false} />
+                            ))
+                            : (<div className="no-results">no results</div>)
                     }
                 </ol>
             </div>
@@ -35,8 +69,19 @@ class PostList extends Component {
     }
 }
 
-PostList.propTypes = {
-    posts: PropTypes.array.isRequired
+const mapStateToProps = (state) => {
+    return {
+        posts: state.posts,
+        categories: state.categories,
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getAllPosts: () => dispatch(fetchPosts()),
+        sortPostsByDate: (posts) => dispatch(sortPostsByDate(posts)),
+        sortPostsByScore: (posts) => dispatch(sortPostsByScore(posts)),
+    }
 }
 
-export default PostList;
+export default connect(mapStateToProps, mapDispatchToProps)(PostList);

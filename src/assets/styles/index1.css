@@ -41,7 +41,6 @@ body, .app {
   max-width: 500px;
   margin: 0 auto;
   display: flex;
-  flex-flow: column;
 }
 
 .create-post-details {
@@ -81,19 +80,11 @@ body, .app {
   outline: 0;
 }
 
-select {
-  padding: 5px 5px;
-  margin-bottom: 10px;
-  font-size: inherit;
-  background: transparent;
-  border: none;
-  border-bottom: 1px solid #ccc;
-  outline: 0;
-  color:rgb(123, 123, 122);
-}
-
 /* Listposts */
 
+.list-posts {
+  padding-top: 5px;
+}
 .list-posts-top {
   position: fixed;
   width: 100%;
@@ -157,18 +148,6 @@ select {
   }
 }
 
-.comment-list-item {
-  background: #eaeae3;
-  border: none;
-  padding: 10px;
-  display: flex;
-  margin: 20px;
-}
-
-.comment-list-item p {
-  font-size: 14px;
-}
-
 .post-voting-box {
   margin-right: 20px;
   background-repeat: no-repeat;
@@ -198,16 +177,12 @@ select {
   margin: 0;
 }
 
-.post-text {
+.post-details p {
   margin: 0;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.post-full-text {
-  margin: 15px 0;  
 }
 
  span {
@@ -234,8 +209,8 @@ select {
 .post-upvote, .post-downvote {
   padding-left: 20px;
   align-self: center;
-  width: 25px;
-  height: 25px;
+  width: 32px;
+  height: 32px;
   background-color: transparent;
   background-size: 100% 100%;
   border: 0;
@@ -258,7 +233,7 @@ select {
   transform: rotate(-90deg);
 }
 
-.post-info {
+.post-info{
   text-align: right;
   font-size: .8em;
   color: rgb(159, 160, 159);
@@ -289,15 +264,5 @@ select {
 .no-results {
   text-align: center;
   margin: 30px auto;
-}
 
-.container-text {
-  margin: 20px;
-  display: block;
-  text-align: right;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
 }

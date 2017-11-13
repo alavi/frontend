@@ -1,28 +1,39 @@
 import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 import {
-    GET_ALL_POSTS,
     GET_CATEGORIES,
-    GET_CATEGORY_POSTS,
+    GET_ALL_POSTS,
+    GET_POST,
     ADD_POST,
-    ADD_COMMENT,
+    EDIT_POST,
+    DELETE_POST,
     VOTE_POST,
-    VOTE_DOWN_POST
+    GET_POST_COMMENTS,
+    GET_COMMENT,
+    ADD_COMMENT,
+    EDIT_COMMENT,
+    VOTE_COMMENT,
+    DELETE_COMMENT,
+    GET_POST_COMMENTS_COUNT
 } from '../actions';
 
-
 function posts(state = [], action) {
-    const { posts } = action;
+    const { posts, post, commentsCount, id } = action;
 
     switch (action.type) {
         case GET_ALL_POSTS:
-            return posts.sort((x, y) => x.voteScore < y.voteScore);
-        case GET_CATEGORY_POSTS:
             return posts;
+        case ADD_POST:
+            return [...state, post];
+        case EDIT_POST:
+        case VOTE_POST:
+            return state.map(item => (item.id === post.id ? post : item))
+        case DELETE_POST:
+            return state.filter((item) => item.id !== post.id);
         default:
             return state;
     }
-}
+};
 
 function categories(state = [], action) {
     const { categories } = action;
@@ -33,55 +44,69 @@ function categories(state = [], action) {
         default:
             return state;
     }
-}
-/*
-function food (state = {}, action) {
-  switch (action.type) {
-    case ADD_RECIPE :
-      const { recipe } = action
+};
 
-      return {
-        ...state,
-        [recipe.label]: recipe,
-      }
-    default :
-      return state
-  }
-}
-*/
-function post(state = {}, action) {
-    //const { id, timestamp, title, body, author, category,voteScore } = action;
+function post(state = [], action) {
+    const { post, commentsCount } = action;
+
     switch (action.type) {
-      case VOTE_POST :
-
-        const { id, option } = action
-      //  return {
-      //    [post.voteScore]: action.voteScore ,
-      //  }
-      return {
-         ...state,
-          }
-        case ADD_POST:
-            return { ...state };
+        case GET_POST:
+        case VOTE_POST:
+            return post;
         default:
             return state;
     }
-}
+};
 
-function comment(state = [], action) {
-    const { id, timestamp, body, author, parentId } = action;
+function postComments(state = [], action) {
+    const { comments, comment } = action;
 
     switch (action.type) {
+        case GET_POST_COMMENTS:
+            return comments;
         case ADD_COMMENT:
-            return { ...state };
+            return [...state, comment];
+        case DELETE_COMMENT:
+            return state.filter((item) => item.id !== comment.id);
+        case EDIT_COMMENT:
+        case VOTE_COMMENT:
+            return state.map(item => (item.id === comment.id ? comment : item))
+        default:
+            return state;
+    }
+};
+
+function comment(state = [], action) {
+    const { comment } = action;
+
+    switch (action.type) {
+        case GET_COMMENT:
+        case VOTE_COMMENT:
+            return comment;
+        default:
+            return state;
+    }
+};
+
+function commentsCount(state = {}, action) {
+    const { commentsCount, id } = action;
+
+    switch (action.type) {
+        case GET_POST_COMMENTS_COUNT:
+            return {
+                ...state, [id]: commentsCount
+            }
         default:
             return state;
     }
 }
 
 export default combineReducers({
-    posts,
     post,
+    posts,
+    comment,
+    postComments,
+    commentsCount,
     categories,
     routing: routerReducer
 });
